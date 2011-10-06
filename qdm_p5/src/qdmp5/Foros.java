@@ -23,6 +23,7 @@ public class Foros extends PApplet {
 
 	GSMovieMaker mm;
 
+	
 	VerletPhysics2D physics;
 
 	boolean debug = false;
