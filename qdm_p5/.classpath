@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/base/toxiclibs_p5/toxiclibs_p5.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/toxiclibs_p5"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/verletphysics/verletphysics.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/verletphysics"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/geomerative/batikfont.jar" sourcepath="/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/geomerative/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/geomerative"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/geomerative/geomerative.jar" sourcepath="/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/geomerative/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/geomerative"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/simutils/simutils.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/simutils"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/opengl/gluegen-rt.jar" sourcepath="/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/opengl/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/opengl"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/opengl/jogl.jar" sourcepath="/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/opengl/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/opengl"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/opengl/opengl.jar" sourcepath="/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/opengl/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/opengl"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/GSVideo/GSVideo.jar" sourcepath="/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/GSVideo/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/GSVideo"/>
+			<attribute name="javadoc_location" value="file:/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/GSVideo/reference/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/GSVideo/gstreamer-java.jar" sourcepath="/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/GSVideo/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/GSVideo"/>
+			<attribute name="javadoc_location" value="file:/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/GSVideo/reference/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/datautils/datautils.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/datautils"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/toxiclibscore/toxiclibscore.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/toxiclibscore"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/colorutils/colorutils.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/colorutils"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/core/ant-launcher.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/core"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/core/ant.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/core"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/core/core.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/core"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
