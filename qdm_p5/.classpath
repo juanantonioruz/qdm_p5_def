@@ -6,7 +6,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/toxiclibs_p5"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/base/verletphysics/verletphysics.jar">
+	<classpathentry kind="lib" path="lib/base/verletphysics/verletphysics.jar" sourcepath="/home/juanitu/git/toxiclibs/src.physics">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/verletphysics"/>
 		</attributes>

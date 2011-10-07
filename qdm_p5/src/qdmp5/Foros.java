@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.enjava.p5.servicios.ServicioFechas;
+
 import toxi.geom.*;
 import toxi.physics2d.*;
 import toxi.physics2d.behaviors.*;
@@ -22,16 +24,69 @@ import codeanticode.gsvideo.*;
 public class Foros extends PApplet {
 
 	GSMovieMaker mm;
-
-	
-	VerletPhysics2D physics;
-
+	ForosPhysics physics;
 	boolean debug = false;
 	boolean grabando = false;
 	PFont font;
+	ServicioFechas servicioFechas;
+	
+	public void setup() {
+		size(1200, 600);
+		colorMode(HSB, 100);
+		smooth();
+		
+		
+		
+		physics = new ForosPhysics(this);
+		physics.setup();
+		equipos = iniciaCapa();
+		usuarios = iniciaCapa();
+		comentariosG = iniciaCapa();
+		relaciones = iniciaCapa();
+		mensajes = iniciaCapa();
 
-	float daysForum;
+		
+		iniciaEquipos(iniciaColoresEquipos());
+		procesaXML();
+		// analizaPosicionamiento();
+		background(0);
+		font = loadFont("Courier10PitchBT-Roman-25.vlw");
+		textFont(font);
 
+		Collections.reverse(comentarios);
+		if (comentarios.size() > 2) {
+//			int numeroSegundosPorComentario = 3;
+//			int numeroSegundosPorComentarioRetardo = 5;
+//			int numeroComentarios = comentarios.size();
+
+			/*
+			 * otra forma de tener en cuenta la temporalidad pero se sale del
+			 * problema totalmente habria que hacer una funcion recursiva que
+			 * agrupase los valores por proximidad Map<Comentario, Integer>
+			 * mapa=new HashMap(); for(int i=0; i<comentarios.size()-1;i++){
+			 * float dif=calculaDiferencia(comentarios.get(i).fecha,
+			 * comentarios.get(i+1).fecha); mapa.put(comentarios.get(i+1), new
+			 * Integer(map(dif,))); }
+			 */
+//			 servicioFechas=new ServicioFechas(this);
+//			daysForum = servicioFechas.calculaDiferencia(comentarios.get(0).fecha,
+//					comentarios.get(comentarios.size() - 1).fecha);
+			
+		} else {
+			noLoop();
+			pintaMensaje(color(100), "comentarios insuficientes", 0, 0, this.g,
+					25);
+		}
+		if (grabando) {
+			mm = new GSMovieMaker(this, width, height, "drawing.ogg",
+					GSMovieMaker.THEORA, GSMovieMaker.MEDIUM, 30);
+			mm.setQueueSize(50, 10);
+
+			mm.start();
+		}
+	}
+	
+	
 	Capa iniciaCapa() {
 
 		Capa c = new Capa(this);
@@ -51,72 +106,21 @@ public class Foros extends PApplet {
 			c.reset(v);
 	}
 
-	ColorList nueva;
 
-	public void setup() {
-		size(1200, 600);
+
+
+	private ColorList iniciaColoresEquipos() {
+		ColorList listaColoresEquipo;
+
 		TColor col = TColor.newRandom();
 		ColorTheoryStrategy s = new CompoundTheoryStrategy();
 		ColorList list = ColorList.createUsingStrategy(s, col);
-		nueva = new ColorList(list);
+		listaColoresEquipo = new ColorList(list);
 		for (int i = 0; i < list.size(); i++) {
 			TColor c = (TColor) list.get(i);
-			nueva.add(c.getInverted());
+			listaColoresEquipo.add(c.getInverted());
 		}
-		physics = new VerletPhysics2D();
-		physics.setWorldBounds(new Rect(10, 10, width - 10, height - 10));
-
-		equipos = iniciaCapa();
-		usuarios = iniciaCapa();
-		comentariosG = iniciaCapa();
-		relaciones = iniciaCapa();
-		mensajes = iniciaCapa();
-
-		colorMode(HSB, 100);
-		smooth();
-		iniciaEquipos();
-		procesaXML();
-		// analizaPosicionamiento();
-		background(0);
-		font = loadFont("Courier10PitchBT-Roman-25.vlw");
-		textFont(font);
-
-		Collections.reverse(comentarios);
-		if (comentarios.size() > 2) {
-			int numeroSegundosPorComentario = 3;
-			int numeroSegundosPorComentarioRetardo = 5;
-			int numeroComentarios = comentarios.size();
-
-			/*
-			 * otra forma de tener en cuenta la temporalidad pero se sale del
-			 * problema totalmente habria que hacer una funcion recursiva que
-			 * agrupase los valores por proximidad Map<Comentario, Integer>
-			 * mapa=new HashMap(); for(int i=0; i<comentarios.size()-1;i++){
-			 * float dif=calculaDiferencia(comentarios.get(i).fecha,
-			 * comentarios.get(i+1).fecha); mapa.put(comentarios.get(i+1), new
-			 * Integer(map(dif,))); }
-			 */
-
-			daysForum = calculaDiferencia(comentarios.get(0).fecha,
-					comentarios.get(comentarios.size() - 1).fecha);
-			if (debug) {
-				println("tiempo de foro inicio: " + comentarios.get(0).fecha
-						+ "> fin: "
-						+ comentarios.get(comentarios.size() - 1).fecha);
-				println("days: " + daysForum);
-			}
-		} else {
-			noLoop();
-			pintaMensaje(color(100), "comentarios insuficientes", 0, 0, this.g,
-					25);
-		}
-		if (grabando) {
-			mm = new GSMovieMaker(this, width, height, "drawing.ogg",
-					GSMovieMaker.THEORA, GSMovieMaker.MEDIUM, 30);
-			mm.setQueueSize(50, 10);
-
-			mm.start();
-		}
+		return listaColoresEquipo;
 	}
 
 	Capa equipos, usuarios, comentariosG, relaciones, mensajes;
@@ -125,7 +129,7 @@ public class Foros extends PApplet {
 	  physics.update();
 
 	  background(0);
-	  pintaMensaje(color(100), (int)(map(((30*30)-frame), (30*30), 0, 100, 0))+"%", width-100, 50, this.g, 20);
+	  pintaMensaje(color(100), (int)(map(((30*30)-contador), (30*30), 0, 100, 0))+"%", width-100, 50, this.g, 20);
 	  //  daysForum
 
 	  // equipos.beginDraw();
@@ -138,8 +142,17 @@ public class Foros extends PApplet {
 	  iniciaPGraphics(mensajes, null);
 	  comprueba();
 
-	  for (Visualizable c:comentariosG.elementos)
-	    ((Comentario)c).pinta(comentariosG);
+	  for (Visualizable c:comentariosG.elementos){
+	    Comentario cc = (Comentario)c;
+	    cc.pinta(comentariosG);
+	    if(cc.rollOver()){
+				pintaMensaje(color(100), cc.titulo, 500, 10 + (1 * 25),
+						this.g, 15);
+				this.stroke(color(100, 30));
+				this.line(500 + textWidth(cc.titulo), 10 + (1 * 25),
+						cc.particle.x, cc.particle.y);
+	    }
+	  }
 	  for (Visualizable u:usuarios.elementos)
 	    ((Usuario)u).pinta(usuarios);
 	  for (Visualizable e:equipos.elementos)
@@ -207,7 +220,7 @@ public class Foros extends PApplet {
 	int contador;
 	Comentario comentarioActual;
 
-	int frame;
+
 
 	void comprueba() {
 	  if (contador>=comentarios.size()) return ;
@@ -215,10 +228,10 @@ public class Foros extends PApplet {
 
 
 
-	  float daysDiff=calculaDiferencia(comentarios.get(0).fecha, comentarioActual.fecha);
-	  frame=(int)(map(daysDiff, 0, daysForum, 0, 30*30));
-	  if (debug)
-	    println(contador+">>>>>>>>>><"+daysDiff+" "+frame+" --- "+frameCount);
+	  //float daysDiff=calculaDiferencia(comentarios.get(0).fecha, comentarioActual.fecha);
+	  //frame=(int)(map(daysDiff, 0, daysForum, 0, 30*30));
+//	  if (debug)
+//	    println(contador+">>>>>>>>>><"+daysDiff+" "+frame+" --- "+frameCount);
 
 	  //if (int(frame)==(frameCount-1)) {
 	  if (frameCount%10==0) {
@@ -330,44 +343,24 @@ public class Foros extends PApplet {
 		throw new RuntimeException();
 	}
 
-	@Deprecated
-	void analizaPosicionamiento() {
-		for (Equipo e : equiposIn) {
 
-			for (Usuario u : e.usuarios) {
-
-				u.particle.x = e.particle.x + random(-25, 25);
-				u.particle.y = e.particle.y + random(-25, 25);
-
-				for (Comentario c : u.comentarios) {
-
-					float provX = u.particle.x + random(-5, 5);
-					float provY = u.particle.y + random(-5, 5);
-					c.particle = new VerletParticle2D(new Vec2D(provX, provY));
-					c.particle.addBehavior(new AttractionBehavior(
-							u.equipo.particle, 50, 0.05f));
-					physics.addParticle(c.particle);
-				}
-			}
-		}
-	}
 
 	List<Comentario> comentarios = new ArrayList<Comentario>();
 
 	public void mouseMoved() {
-		int contaM = 0;
-		for (int i = comentariosG.elementos.size() - 1; i >= 0; i--) {
-			Comentario cc = (Comentario) comentariosG.elementos.get(i);
-			if (dist(cc.particle.x, cc.particle.y, mouseX, mouseY) < cc.widtho / 2) {
-				println(cc.titulo);
-				pintaMensaje(color(100), cc.titulo, 500, 10 + (contaM * 25),
-						this.g, 15);
-				this.stroke(color(100, 30));
-				this.line(500 + textWidth(cc.titulo), 10 + (contaM * 25),
-						cc.particle.x, cc.particle.y);
-
-			}
-		}
+//		int contaM = 0;
+//		for (int i = comentariosG.elementos.size() - 1; i >= 0; i--) {
+//			Comentario cc = (Comentario) comentariosG.elementos.get(i);
+//			if (dist(cc.particle.x, cc.particle.y, mouseX, mouseY) < cc.widtho / 2) {
+//				println(cc.titulo);
+//				pintaMensaje(color(100), cc.titulo, 500, 10 + (contaM * 25),
+//						this.g, 15);
+//				this.stroke(color(100, 30));
+//				this.line(500 + textWidth(cc.titulo), 10 + (contaM * 25),
+//						cc.particle.x, cc.particle.y);
+//
+//			}
+//		}
 	}
 
 	void procesaXML() {
@@ -421,7 +414,7 @@ public class Foros extends PApplet {
 
 	List<Equipo> equiposIn = new ArrayList();
 
-	void iniciaEquipos() {
+	void iniciaEquipos(ColorList listaColoresEquipo) {
 
 		equiposIn.add(new Equipo(this, 1, "bamako", 224, 122));
 		equiposIn.add(new Equipo(this, 2, "barcelona", 236, 55));
@@ -434,12 +427,9 @@ public class Foros extends PApplet {
 		equiposIn.add(new Equipo(this, 9, "rio", 175, 221));
 		equiposIn.add(new Equipo(this, 10, "sale", 224, 72));
 		for (int i = 0; i < equiposIn.size(); i++)
-			equiposIn.get(i).setColor((TColor) nueva.get(i));
+			equiposIn.get(i).setColor((TColor) listaColoresEquipo.get(i));
 	}
 
-	float calculaDiferencia(Date inicio, Date fin) {
-		long diff = fin.getTime() - inicio.getTime();
-		return (diff / (1000 * 60 * 60 * 24));
-	}
+
 
 }

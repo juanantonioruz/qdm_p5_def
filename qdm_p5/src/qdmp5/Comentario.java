@@ -34,15 +34,15 @@ public class Comentario extends ClaseP5 implements Visualizable {
 	  }
 	  public void pinta(Capa pg) {
 	    //if(!representado){
-	    pinta(pg, p5.color(80, tono));
+	     pinta(pg, p5.color(80, tono));
 
 	    //}
-	    if (tono<99) {
-	      tono+=1;
-	    }
-	    else {
-	      representado=true;
-	    }
+//	    if (tono<99) {
+//	      tono+=1;
+//	    }
+//	    else {
+//	      representado=true;
+//	    }
 	  }
 	  float widtho=15;
 	  float heighto=3;
@@ -54,8 +54,15 @@ public class Comentario extends ClaseP5 implements Visualizable {
 	    pg.g.fill(p5.hue(usuario.equipo.c), p5.map(widtho, 15, 55,20, 100), p5.map(widtho, 15, 55, 20, 100));
 	    pg.g.ellipse(particle.x, particle.y, widtho, heighto);
 	    pg.g.popStyle();
+	    
 	  }
+	  public boolean rollOver(){
+			if (p5.dist(particle.x, particle.y, p5.mouseX, p5.mouseY) < widtho / 2) {
+				return true;
+				}
+			    return false;
 
+	  }
 	  public void reset(Capa pg) {
 	    representado=false;
 	  }
