@@ -18,11 +18,13 @@ public class Equipo extends VisualizableBase implements Visualizable {
 	int id;
 	int c;
 	boolean representado;
+	String barrio;
 
-	public Equipo(PApplet p5,int _id, String _n, int _x, int _y) {
+	public Equipo(PApplet p5,int _id, String _n, int _x, int _y, String _barrio) {
 		super(p5);
 		this.id = _id;
 		this.nombre = _n;
+		barrio = _barrio;
 		particle = new VerletParticle2D(p5.map(_x, 0, widthEscala, 0, p5.width), p5.map(
 				_y, 0, heightEscala, 0, p5.height));
 	}

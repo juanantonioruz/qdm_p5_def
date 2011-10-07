@@ -32,20 +32,12 @@ public class Relacion extends ClaseP5 implements Visualizable {
 	    representado=false;
 	  }
 	  public void pinta(Capa pg) {
-	    if (!representado) {
-	          pg.g.stroke(origen.usuario.equipo.c, tonito);
+	          pg.g.stroke(100);
 	          pg.g.noFill();
 	          pg.g.strokeWeight(1);
 	           pg.g.line(origen.particle.x, origen.particle.y,
 
 	    fin.particle.x, fin.particle.y);
-	    }
-	    if (tonito<limite ) {
-	      tonito+=1;
-	    }
-	    else {
-	      representado=true;
-	    }
 	  }
 	@Override
 	public VerletParticle2D getParticle() {

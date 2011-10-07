@@ -6,20 +6,21 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.enjava.p5.servicios.ServicioFechas;
-
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
-import toxi.physics2d.VerletConstrainedSpring2D;
-import toxi.physics2d.VerletMinDistanceSpring2D;
-import toxi.physics2d.VerletParticle2D;
+
+import com.enjava.p5.servicios.ServicioFechas;
 
 /**
  * tamanyo == cantidad de palabras tiempo == tiempointeractivo/tiempo foro ----
  * las fechas muy largas habría que acortarlas.... numero
  * aportaciones=luminosidad polemico=numero de contestaciones lugar:pais-barrio
  * onMouse-over toxi-color
+ * 
+ * 
+ * Se hace una simulacion temporal de aparicion de comentarios,,, es por eso que
+ * es de forma incremental el proceso y afecta al modelo y a la ui
  * 
  * @author juanitu
  * 
@@ -35,6 +36,7 @@ public class Foros extends PApplet {
 	Log log = LogFactory.getLog(getClass());
 	GrabacionEnVideo grabacionEnVideo;
 	List<Comentario> comentarios;
+	String tituloForo="Foro Espacio público";
 
 	public void setup() {
 		size(1200, 600);
@@ -64,14 +66,14 @@ public class Foros extends PApplet {
 
 	}
 
-	Capa equipos, usuarios, comentariosG, relaciones, mensajes;
+	Capa capaEquipos, capaUsuarios, capaComentarios, capaRelaciones, capaMensajes;
 
 	private void iniciaCapasGraficas() {
-		equipos = iniciaCapa();
-		usuarios = iniciaCapa();
-		comentariosG = iniciaCapa();
-		relaciones = iniciaCapa();
-		mensajes = iniciaCapa();
+		capaEquipos = iniciaCapa();
+		capaUsuarios = iniciaCapa();
+		capaComentarios = iniciaCapa();
+		capaRelaciones = iniciaCapa();
+		capaMensajes = iniciaCapa();
 	}
 
 	private Capa iniciaCapa() {
@@ -96,70 +98,73 @@ public class Foros extends PApplet {
 	public void draw() {
 		physics.update();
 		background(0);
-		pintaMensaje(color(100), (int) (map(((30 * 30) - contador), (30 * 30), 0, 100, 0)) + "%", width - 100, 50,
-				this.g, 20);
+		pintaMensaje(color(100), (int) (map(contador, comentarios.size(), 0, 0, 100)) + "%", width - 100, 50, this.g,
+				20);
 
-		iniciaPGraphics(usuarios, null);
-		iniciaPGraphics(comentariosG, null);
-		iniciaPGraphics(equipos, null);
-		iniciaPGraphics(relaciones, null);
-		iniciaPGraphics(mensajes, null);
+		iniciaPGraphics(capaUsuarios, null);
+		iniciaPGraphics(capaComentarios, null);
+		iniciaPGraphics(capaEquipos, null);
+		iniciaPGraphics(capaRelaciones, null);
+		iniciaPGraphics(capaMensajes, null);
 
-		comprueba();
+		int framesParaAparicionDeNuevoComentario = 2;
+		if (frameCount % framesParaAparicionDeNuevoComentario == 0)
+			comprueba();
 
 		pintaLasCapas();
-		
-		image(equipos.g, 0, 0);
+
+		image(capaEquipos.g, 0, 0);
 		tint(100, 50);
 		noStroke();
-		image(usuarios.g, 0, 0);
-		image(comentariosG.g, 0, 0);
-		// image(relaciones.g, 0, 0);
+		image(capaUsuarios.g, 0, 0);
+		image(capaComentarios.g, 0, 0);
+		image(capaRelaciones.g, 0, 0);
 		tint(100, 100);
 
-		image(mensajes.g, 0, 0);
+		image(capaMensajes.g, 0, 0);
 
-		equipos.endDraw();
-		usuarios.endDraw();
-		comentariosG.endDraw();
-		relaciones.endDraw();
-		mensajes.endDraw();
+		capaEquipos.endDraw();
+		capaUsuarios.endDraw();
+		capaComentarios.endDraw();
+		capaRelaciones.endDraw();
+		capaMensajes.endDraw();
 
 		grabacionEnVideo.addFotograma();
 	}
 
 	private void pintaLasCapas() {
-		for (Visualizable c : comentariosG.elementos) {
+		for (Visualizable c : capaComentarios.elementos) {
 			Comentario cc = (Comentario) c;
-			cc.pinta(comentariosG);
+			cc.pinta(capaComentarios);
 			if (cc.rollOver()) {
+				
 				pintaMensaje(color(100), cc.titulo, 500, 10 + (1 * 25), this.g, 15);
 				this.stroke(color(100, 30));
 				this.line(500 + textWidth(cc.titulo), 10 + (1 * 25), cc.particle.x, cc.particle.y);
 			}
 		}
-		for (Visualizable u : usuarios.elementos)
-			((Usuario) u).pinta(usuarios);
-		for (Visualizable e : equipos.elementos)
-			((Equipo) e).pinta(equipos);
-		for (Visualizable r : relaciones.elementos)
-			((Relacion) r).pinta(relaciones);
+		for (Visualizable u : capaUsuarios.elementos)
+			((Usuario) u).pinta(capaUsuarios);
+		for (Visualizable e : capaEquipos.elementos)
+			((Equipo) e).pinta(capaEquipos);
+		for (Visualizable r : capaRelaciones.elementos)
+			((Relacion) r).pinta(capaRelaciones);
 
 		int contaM = 0;
-		for (int i = comentariosG.elementos.size() - 1; i >= 0; i--) {
-			Comentario cc = ((Comentario) comentariosG.elementos.get(i));
+		for (int i = capaComentarios.elementos.size() - 1; i >= 0; i--) {
+			Comentario cc = ((Comentario) capaComentarios.elementos.get(i));
 			int colorMensaje = color(hue(cc.usuario.equipo.c), 70, 90,
-					map(contaM, 0, comentariosG.elementos.size(), 100, 20));
+					map(contaM, 0, capaComentarios.elementos.size(), 100, 20));
 			pintaMensaje(colorMensaje, cc.titulo, 10, 10 + (contaM * 25), this.g, 15);
 			if (contaM < 3 && debug) {
-				mensajes.g.stroke(colorMensaje);
-				mensajes.g.line(10 + textWidth(cc.titulo), 10 + (contaM * 25), cc.particle.x, cc.particle.y);
+				capaMensajes.g.stroke(colorMensaje);
+				capaMensajes.g.line(10 + textWidth(cc.titulo), 10 + (contaM * 25), cc.particle.x, cc.particle.y);
 			}
 			contaM++;
 		}
-		for (Visualizable v : equipos.elementos) {
+		for (Visualizable v : capaEquipos.elementos) {
 			Equipo e = (Equipo) v;
-			pintaMensaje(color(hue(e.c), 100, 100), e.nombre, e.particle.x, e.particle.y + (e.heighto / 2), mensajes.g,
+			pintaMensaje(color(hue(e.c), 100, 100), e.nombre, e.particle.x, e.particle.y + (e.heighto / 2), capaMensajes.g,
 					20, CENTER);
 		}
 	}
@@ -175,86 +180,48 @@ public class Foros extends PApplet {
 	void comprueba() {
 		if (contador >= comentarios.size())
 			return;
+		
 		Comentario comentarioActual = comentarios.get(contador);
 		Usuario usuarioActual = comentarioActual.usuario;
 		Equipo equipoActual = usuarioActual.equipo;
 
-		if (frameCount % 10 == 0) {
+		
+		usuarioActual.addComentarioRepresentado(comentarioActual);
+		equipoActual.addUsuarioRepresentado(usuarioActual);
 
 
-			//actualiza el modelo DB con informacion de visualizacion
-			usuarioActual.addComentarioRepresentado(comentarioActual);
-			equipoActual.addUsuarioRepresentado(usuarioActual);
-
-			//Actualiza el modelo UI /modelo a visulizar / las capas y el modelo fisico
-			boolean existeEquipo = equipos.addElemento(equipoActual);
-			if (!existeEquipo) {
-
-				physics.addParticle(equipoActual.particle);
-				VerletParticle2D particleOrigin = new VerletParticle2D(equipoActual.particle.copy());
-				particleOrigin.lock();
-				// physics.addParticle(particleOrigin);
-
-				VerletConstrainedSpring2D spring1 = new VerletConstrainedSpring2D(particleOrigin, equipoActual.particle, 50, 0.5f);
-
-				physics.addSpring(spring1);
-
-				for (Visualizable v : equipos.elementos) {
-					Equipo equipoBucle = (Equipo) v;
-					if (equipoActual != equipoBucle) {
-						VisualizableVerletMinDistanceSpring spring = new VisualizableVerletMinDistanceSpring(equipoActual, equipoBucle, 0.5f);
-						equipoActual.springs.add(spring);
-						physics.addSpring(spring);
-					}
-				}
-			}
-
-			boolean existeUsuario = usuarios.addElemento(usuarioActual);
-
-			if (!existeUsuario) {
-
-				usuarioActual.particle = new VerletParticle2D(equipoActual.particle.copy().add(random(-0.1f, 0.1f), random(-0.1f, 0.1f)));
-				VerletConstrainedSpring2D springParticle = new VerletConstrainedSpring2D(equipoActual.particle, usuarioActual.particle, 0.2f,
-						random(0.01f, 0.05f));
-				physics.addSpring(springParticle);
-
-				for (Usuario cequ : equipoActual.usuarios) {
-					if (cequ != usuarioActual && usuarios.elementos.contains(cequ)) {
-						VerletMinDistanceSpring2D spring = new VerletMinDistanceSpring2D(
-								usuarioActual.particle, cequ.particle, usuarioActual.widtho / 2
-										+ cequ.widtho / 2, 0.5f);
-						physics.addSpring(spring);
-					}
-				}
-			}
-
-			int cx = (int) (usuarioActual.particle.x + random(-1, 1));
-			int cy = (int) (usuarioActual.particle.y + random(-1, 1));
-			comentarioActual.particle = new VerletParticle2D(cx, cy);
-			VerletConstrainedSpring2D springUsuParticle = new VerletConstrainedSpring2D(
-					usuarioActual.particle, comentarioActual.particle, 5, 0.05f);
-			physics.addSpring(springUsuParticle);
-
-			for (Visualizable v : comentariosG.elementos) {
-				Comentario cequ = (Comentario) v;
-
-				VerletMinDistanceSpring2D spring = new VerletMinDistanceSpring2D(comentarioActual.particle,
-						cequ.particle, comentarioActual.widtho / 2 + cequ.widtho / 2, 0.5f);
-				physics.addSpring(spring);
-			}
-
-			comentariosG.elementos.add(comentarioActual);
-
-			if (comentarioActual.parent != 0) {
-				Comentario parent = dameComentario(comentarioActual.parent);
-				Relacion r = new Relacion(this);
-				r.origen = parent;
-				r.fin = comentarioActual;
-				relaciones.addElemento(r);
-			}
-
-			contador++;
+		// Actualiza el modelo UI /modelo a visulizar / las capas y el modelo
+		// fisico
+		boolean existeEquipo = capaEquipos.addElemento(equipoActual);
+		if (!existeEquipo) {
+			physics.addParticleEquipo(equipoActual);
+			physics.separaMinimoEquipo(equipoActual);
 		}
+		// actualiza el modelo DB con informacion de visualizacion
+
+		boolean existeUsuario = capaUsuarios.addElemento(usuarioActual);
+
+		if (!existeUsuario) {
+			physics.fijaUsuarioAEquipo(usuarioActual);
+			physics.mantenDistanciaEntreUsuariosMismoEquipo(usuarioActual);
+		}
+
+		// nunca existe el comentario de antemano... por ello no hay comprobacion previa
+		capaComentarios.elementos.add(comentarioActual);
+
+		physics.fijaComentarioAUsuario(comentarioActual);
+		physics.mantenDistanciaEntreComentariosMismoUsuario(comentarioActual);
+
+
+		if (comentarioActual.parent != 0) {
+			Comentario parent = dameComentario(comentarioActual.parent);
+			Relacion r = new Relacion(this);
+			r.origen = parent;
+			r.fin = comentarioActual;
+			capaRelaciones.addElemento(r);
+		}
+
+		contador++;
 	}
 
 	void pintaMensaje(int c, String mensaje, float x, float y, PGraphics g, int tam) {

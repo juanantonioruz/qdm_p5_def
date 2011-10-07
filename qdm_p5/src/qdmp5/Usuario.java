@@ -21,6 +21,9 @@ public class Usuario  extends VisualizableBase implements Visualizable {
 	    this.id=_id;
 	    this.nombre=_nombre;
 	    this.mail=_mail;
+		particle = new VerletParticle2D(equipo.particle.copy().add(p5.random(-0.1f, 0.1f),
+				p5.random(-0.1f, 0.1f)));
+
 	  }
 	  List<Comentario> comentarios=new ArrayList();
 	   List<Comentario> comentariosRepresentados=new ArrayList();
