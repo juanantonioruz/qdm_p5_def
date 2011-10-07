@@ -1,10 +1,14 @@
 package qdmp5;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import processing.core.PApplet;
 
-public class ClaseP5 {
+public abstract class ClaseP5 {
 
 	PApplet p5;
+	Log log=LogFactory.getLog(getClass());
 
 	public ClaseP5(PApplet p5) {
 		super();

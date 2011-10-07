@@ -9,6 +9,7 @@ import processing.core.PGraphics;
 public class Capa extends ClaseP5{
 	  public Capa(PApplet p5) {
 		super(p5);
+		log.info("capa");
 		// TODO Auto-generated constructor stub
 	}
 

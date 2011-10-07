@@ -43,14 +43,14 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/base/GSVideo/GSVideo.jar" sourcepath="/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/GSVideo/src">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/GSVideo"/>
 			<attribute name="javadoc_location" value="file:/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/GSVideo/reference/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/GSVideo"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/base/GSVideo/gstreamer-java.jar" sourcepath="/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/GSVideo/src">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/GSVideo"/>
 			<attribute name="javadoc_location" value="file:/home/juanitu/Escritorio/processing-1.5.1/modes/java/libraries/GSVideo/reference/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/GSVideo"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/base/datautils/datautils.jar">
@@ -84,5 +84,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/logging"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

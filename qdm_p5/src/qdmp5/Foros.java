@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.enjava.p5.servicios.ServicioFechas;
 
 import toxi.geom.*;
@@ -29,48 +32,29 @@ public class Foros extends PApplet {
 	boolean grabando = false;
 	PFont font;
 	ServicioFechas servicioFechas;
+	Log log=LogFactory.getLog(getClass());
+	
 	
 	public void setup() {
+		log.info("setup");
 		size(1200, 600);
 		colorMode(HSB, 100);
 		smooth();
 		
-		
-		
 		physics = new ForosPhysics(this);
 		physics.setup();
-		equipos = iniciaCapa();
-		usuarios = iniciaCapa();
-		comentariosG = iniciaCapa();
-		relaciones = iniciaCapa();
-		mensajes = iniciaCapa();
-
 		
+		
+		iniciaCapasGraficas();
 		iniciaEquipos(iniciaColoresEquipos());
-		procesaXML();
-		// analizaPosicionamiento();
+		procesaXML("foros.xml");
+		
 		background(0);
 		font = loadFont("Courier10PitchBT-Roman-25.vlw");
 		textFont(font);
 
 		Collections.reverse(comentarios);
 		if (comentarios.size() > 2) {
-//			int numeroSegundosPorComentario = 3;
-//			int numeroSegundosPorComentarioRetardo = 5;
-//			int numeroComentarios = comentarios.size();
-
-			/*
-			 * otra forma de tener en cuenta la temporalidad pero se sale del
-			 * problema totalmente habria que hacer una funcion recursiva que
-			 * agrupase los valores por proximidad Map<Comentario, Integer>
-			 * mapa=new HashMap(); for(int i=0; i<comentarios.size()-1;i++){
-			 * float dif=calculaDiferencia(comentarios.get(i).fecha,
-			 * comentarios.get(i+1).fecha); mapa.put(comentarios.get(i+1), new
-			 * Integer(map(dif,))); }
-			 */
-//			 servicioFechas=new ServicioFechas(this);
-//			daysForum = servicioFechas.calculaDiferencia(comentarios.get(0).fecha,
-//					comentarios.get(comentarios.size() - 1).fecha);
 			
 		} else {
 			noLoop();
@@ -84,6 +68,15 @@ public class Foros extends PApplet {
 
 			mm.start();
 		}
+	}
+
+
+	private void iniciaCapasGraficas() {
+		equipos = iniciaCapa();
+		usuarios = iniciaCapa();
+		comentariosG = iniciaCapa();
+		relaciones = iniciaCapa();
+		mensajes = iniciaCapa();
 	}
 	
 	
@@ -363,10 +356,11 @@ public class Foros extends PApplet {
 //		}
 	}
 
-	void procesaXML() {
-	  XMLElement xml = new XMLElement(this, "foros.xml");
+	void procesaXML(String archivo) {
+	  XMLElement xml = new XMLElement(this, archivo);
 	  int numSites = xml.getChildCount();
 	  XMLElement[] kids = xml.getChildren();
+	  if(debug)
 	  println(kids.length);
 	  for (XMLElement el:kids) {
 	    try {
