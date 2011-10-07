@@ -5,9 +5,8 @@ import java.util.Date;
 import processing.core.PApplet;
 import toxi.physics2d.VerletParticle2D;
 
-public class Comentario extends ClaseP5 implements Visualizable {
+public class Comentario extends VisualizableBase implements Visualizable {
 
-	  VerletParticle2D particle; 
 
 	  String texto;
 	  String titulo;
@@ -44,8 +43,8 @@ public class Comentario extends ClaseP5 implements Visualizable {
 //	      representado=true;
 //	    }
 	  }
-	  float widtho=15;
-	  float heighto=3;
+//	  float widtho=15;
+//	  float heighto=3;
 	  public void pinta(Capa pg, int col) {
 
 	    pg.g.pushStyle();

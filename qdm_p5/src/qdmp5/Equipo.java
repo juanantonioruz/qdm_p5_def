@@ -4,24 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import processing.core.PApplet;
-
 import toxi.color.TColor;
 import toxi.physics2d.VerletParticle2D;
 
-public class Equipo extends ClaseP5 implements Visualizable {
+public class Equipo extends VisualizableBase implements Visualizable {
 	// TODO: tener en cuenta los espacios
 	int widthEscala = 500;
 	int heightEscala = 319;
 
 	String nombre;
-	List<EquipoSpring> springs = new ArrayList();
+	List<VisualizableVerletMinDistanceSpring> springs = new ArrayList();
 
 	int id;
 	int c;
 	boolean representado;
-	VerletParticle2D particle;
-	float widtho;
-	float heighto;
 
 	public Equipo(PApplet p5,int _id, String _n, int _x, int _y) {
 		super(p5);
@@ -62,7 +58,7 @@ public class Equipo extends ClaseP5 implements Visualizable {
 			float radio = p5.sqrt(areas / p5.PI) + 15;
 			widtho = radio * 2;
 			heighto = widtho;
-			for (EquipoSpring spring : springs)
+			for (VisualizableVerletMinDistanceSpring spring : springs)
 				spring.resetea();
 		}
 	}

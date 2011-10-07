@@ -1,6 +1,7 @@
 package qdmp5;
 
 import processing.core.PApplet;
+import toxi.physics2d.VerletParticle2D;
 
 public class Relacion extends ClaseP5 implements Visualizable {
 
@@ -46,4 +47,14 @@ public class Relacion extends ClaseP5 implements Visualizable {
 	      representado=true;
 	    }
 	  }
+	@Override
+	public VerletParticle2D getParticle() {
+		// TODO esto no hereda de visualizableabstract
+		return null;
+	}
+	@Override
+	public float getwidth() {
+		// TODO esto no hereda de visualizableabstract
+		return 0;
+	}
 	}

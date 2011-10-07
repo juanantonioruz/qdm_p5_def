@@ -7,14 +7,13 @@ import processing.core.PApplet;
 import toxi.physics2d.VerletParticle2D;
 
 
-public class Usuario  extends ClaseP5 implements Visualizable {
+public class Usuario  extends VisualizableBase implements Visualizable {
 	  int id;
 	  String nombre;
 	  String mail;
 	  Equipo equipo;
 
 	  boolean representado;
-	  VerletParticle2D particle;
 
 	  public Usuario(PApplet p5,int _id, String _nombre, String _mail, Equipo _e) {
 		  super(p5);
@@ -44,8 +43,6 @@ public class Usuario  extends ClaseP5 implements Visualizable {
 	     }
 	     */
 	  }
-	  float widtho;
-	  float heighto;
 	  public void pinta(Capa pg) {
 	    pg.g.pushStyle();
 	    pg.g.noFill();
