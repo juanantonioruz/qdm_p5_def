@@ -7,8 +7,8 @@ import processing.core.PApplet;
 
 public abstract class ClaseP5 {
 
-	PApplet p5;
-	Log log=LogFactory.getLog(getClass());
+	protected PApplet p5;
+	protected Log log=LogFactory.getLog(getClass());
 
 	public ClaseP5(PApplet p5) {
 		super();

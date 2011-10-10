@@ -80,7 +80,7 @@ public class Foros extends PApplet {
 
 		Capa c = new Capa(this);
 		PGraphics pg = createGraphics(1200, 600, this.P2D);
-
+		pg.smooth();
 		c.g = pg;
 		return c;
 	}
@@ -133,6 +133,25 @@ public class Foros extends PApplet {
 	}
 
 	private void pintaLasCapas() {
+		
+		capaMensajes.g.fill(30);
+		capaMensajes.g.noStroke();
+		float textSize=50;
+		capaMensajes.g.textSize(textSize);
+		capaMensajes.g.textFont(createFont("Courier", textSize));
+		float anchoMensaje = capaMensajes.g.textWidth(tituloForo);
+		float altoMensaje = capaMensajes.g.textAscent();
+		//capaMensajes.g.rect(width-anchoMensaje,100, anchoMensaje, altoMensaje);
+		
+		
+		capaMensajes.g.textAlign(LEFT);
+		capaMensajes.g.fill(color(100));
+		capaMensajes.g.text(tituloForo, width-anchoMensaje,altoMensaje+100 );
+
+		
+		
+		
+		
 		for (Visualizable c : capaComentarios.elementos) {
 			Comentario cc = (Comentario) c;
 			cc.pinta(capaComentarios);

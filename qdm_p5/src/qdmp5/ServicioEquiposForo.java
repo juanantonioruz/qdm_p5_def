@@ -14,21 +14,8 @@ public class ServicioEquiposForo extends ClaseP5{
 	public ServicioEquiposForo(PApplet p5) {
 		super(p5);
 	}
-	private ColorList iniciaColoresEquipos() {
-		ColorList listaColoresEquipo;
-
-		TColor col = TColor.newRandom();
-		ColorTheoryStrategy s = new CompoundTheoryStrategy();
-		ColorList list = ColorList.createUsingStrategy(s, col);
-		listaColoresEquipo = new ColorList(list);
-		for (int i = 0; i < list.size(); i++) {
-			TColor c = (TColor) list.get(i);
-			listaColoresEquipo.add(c.getInverted());
-		}
-		return listaColoresEquipo;
-	}
 	List<Equipo> iniciaEquipos() {
-		ColorList listaColoresEquipo=iniciaColoresEquipos();
+		ColorList listaColoresEquipo=new ServicioToxiColor().iniciaColoresEquipos();
 		List<Equipo> equiposIn = new ArrayList();
 		equiposIn.add(new Equipo(p5, 1, "bamako", 224, 122,"Niamakoro y Sicoro"));
 		equiposIn.add(new Equipo(p5, 2, "barcelona", 236, 55, "Casc Antic"));
