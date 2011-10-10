@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import processing.core.PApplet;
-import qdmp5.ClaseP5;
-import qdmp5.Usuario;
 import toxi.color.TColor;
 
 public class EquipoEscale extends ModeloEscaleBase{

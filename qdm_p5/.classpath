@@ -83,6 +83,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="qdm_p5/lib/base/core"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/GSVideo/jna.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/logging"/>
 	<classpathentry kind="output" path="bin"/>
