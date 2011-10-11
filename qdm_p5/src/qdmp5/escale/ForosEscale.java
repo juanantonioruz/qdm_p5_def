@@ -21,8 +21,9 @@ public class ForosEscale extends PApplet {
 	PImage mapa;
 	Log log = LogFactory.getLog(getClass());
 
-	List<EquipoEscale> equipos;
-	List<EquipoEscale> equiposDB;
+	List<EquipoEscale> equipos = new ArrayList<EquipoEscale>();
+
+	List<EquipoEscale> equiposDB = new ArrayList<EquipoEscale>();
 	PFont font;
 	GrabacionEnVideo grabacionEnVideo;
 	private boolean grabando = false;
@@ -39,8 +40,8 @@ public class ForosEscale extends PApplet {
 		size(mapa.width, mapa.height);
 		smooth();
 		font = loadFont("Courier10PitchBT-Roman-25.vlw");
-
-		loadXML();
+				
+		comentarios=new ServicioLoadEquipos(this).loadXML(equipos, equiposDB);
 		
 		grabacionEnVideo = new GrabacionEnVideo(this, grabando);
 		
@@ -52,27 +53,8 @@ public class ForosEscale extends PApplet {
 		servicioEscala=new ServicioEscala(this, equipos, comentariosRepresentados);
 	}
 
-	private void loadXML() {
-		equipos = new ArrayList<EquipoEscale>();
-		equiposDB = new ArrayList<EquipoEscale>();
-		equiposDB.add(new EquipoEscale(this, 1, "bamako", 224, 122, "Niamakoro y Sicoro"));
-		equiposDB.add(new EquipoEscale(this, 2, "barcelona", 236, 55, "Casc Antic"));
-		equiposDB.add(new EquipoEscale(this, 3, "bogota", 133, 145, "Chapinero"));
-		equiposDB.add(new EquipoEscale(this, 4, "elalto", 141, 174, "Santa Rosa"));
-		equiposDB.add(new EquipoEscale(this, 5, "evry", 238, 39, "Pyramides"));
-		equiposDB.add(new EquipoEscale(this, 6, "montreuil", 243, 43, "Bel-Pêche"));
-		equiposDB.add(new EquipoEscale(this, 7, "palma", 241, 61, "Son Roca y Son Gotleu"));
-		equiposDB.add(new EquipoEscale(this, 8, "pikine", 210, 121, "Wakhinane"));
-		equiposDB.add(new EquipoEscale(this, 9, "rio", 175, 221, "La Maré y Rio das Pedras"));
-		equiposDB.add(new EquipoEscale(this, 10, "sale", 224, 72, "Karyan El Oued"));
-		ColorList listaColoresEquipo = new ServicioToxiColor().iniciaColoresEquipos();
+	
 
-		for (int i = 0; i < equiposDB.size(); i++)
-			equiposDB.get(i).setColor((TColor) listaColoresEquipo.get(i));
-		ForosXMLLoadScale forosXMLLoad = new ForosXMLLoadScale(this, equiposDB);
-		comentarios = forosXMLLoad.procesaXML("foros.xml");
-		Collections.reverse(comentarios);
-	}
 
 	int ascenderGeneral = 2;
 	int ascenderZoom = 3;
