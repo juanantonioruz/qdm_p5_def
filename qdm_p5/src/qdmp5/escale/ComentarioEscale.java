@@ -38,16 +38,28 @@ public class ComentarioEscale extends ModeloEscaleBase {
 
 	float cantidad;
 
+	float contador;
+	boolean yaSaturado;
 	public void pinta(PFont font, int tiempoDeComentario) {
-
 		p5.pushStyle();
 		p5.stroke(100);
 		p5.strokeWeight(0.2f);
-		p5.fill(usuario.equipo.color,60);
-		p5.ellipse(x, y, widtho, heighto);
+
+//		p5.fill(usuario.equipo.color,100);
+		float map = p5.map(contador, 0, tiempoDeComentario, 85, 100);
+		if(map>95) yaSaturado=true;
+		p5.fill(usuario.equipo.color, map);
+
+		float withoBis = p5.map(contador, 0, tiempoDeComentario, widtho/2, widtho);
+		p5.ellipse(x, y,  withoBis, withoBis);
 		p5.popStyle();
-		tituloMensaje.pintaMensaje(font, p5.color(100), p5.color(0), titulo, x,y, 9,  tiempoDeComentario);
-		equipoMensaje.pintaMensaje(font, p5.color(100), usuario.equipo.color, usuario.equipo.nombre, x,y-(tituloMensaje.textAscent), 9,  tiempoDeComentario);
+		tituloMensaje.pintaMensaje(font, p5.color(100), p5.color(0), titulo, x,y+heighto, 9,  tiempoDeComentario/2, tiempoDeComentario/4);
+		equipoMensaje.pintaMensaje(font, p5.color(100), usuario.equipo.color, usuario.equipo.nombre, x,y-(tituloMensaje.textAscent)+heighto, 9,  tiempoDeComentario/2, tiempoDeComentario/4);
+		if(!yaSaturado)
+		contador++;
+		else
+			if(contador>70)
+				contador--;
 
 	}
 	public boolean rollOver() {

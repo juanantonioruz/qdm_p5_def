@@ -11,15 +11,10 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
-import qdmp5.Equipo;
-import qdmp5.ForosXMLLoad;
 import qdmp5.GrabacionEnVideo;
 import qdmp5.ServicioToxiColor;
 import toxi.color.ColorList;
 import toxi.color.TColor;
-import toxi.geom.*;
-import toxi.physics2d.*;
-import toxi.physics2d.behaviors.*;
 
 public class ForosEscale extends PApplet {
 
@@ -30,7 +25,7 @@ public class ForosEscale extends PApplet {
 	List<EquipoEscale> equiposDB;
 	PFont font;
 	GrabacionEnVideo grabacionEnVideo;
-	private boolean grabando = false;
+	private boolean grabando = true;
 
 	public void setup() {
 		colorMode(HSB, 100);
@@ -60,15 +55,16 @@ public class ForosEscale extends PApplet {
 		comentarios = forosXMLLoad.procesaXML("foros.xml");
 		Collections.reverse(comentarios);
 		grabacionEnVideo = new GrabacionEnVideo(this, grabando);
-		escalaActual = new EscalaYTranslacion(1, width/2, height/2);
-		mapeo =escalaActual.scale;
+		escalaActual = new EscalaYTranslacion(1, width / 2, height / 2);
+		mapeo = escalaActual.scale;
 		x = escalaActual.x;
-		y =escalaActual.y;
+		y = escalaActual.y;
 
 	}
-	int ascenderGeneral=2;
-	int ascenderZoom=3;
-	int descender=1;
+
+	int ascenderGeneral = 2;
+	int ascenderZoom = 3;
+	int descender = 1;
 	List<ComentarioEscale> comentarios;
 	List<ComentarioEscale> comentariosRepresentados = new ArrayList<ComentarioEscale>();
 	int equipo = 6;
@@ -88,11 +84,11 @@ public class ForosEscale extends PApplet {
 		scale(mapeo);
 		translate(-x, -y); // to scale from the center
 		image(a, 0, 0);
-		ellipse(x, y,100,100);
+	//	ellipse(x, y, 100, 100);
 		for (int i = 0; i < comentariosRepresentados.size(); i++) {
 			ComentarioEscale comentario = comentariosRepresentados.get(i);
 
-			comentario.pinta(font, tiempoDeComentario);
+			comentario.pinta(font, tiempoDeComentario/2);
 
 			if (i > 0) {
 				ComentarioEscale comentarioAnterior = comentariosRepresentados.get(i - 1);
@@ -110,66 +106,67 @@ public class ForosEscale extends PApplet {
 
 	}
 
-	int[] movs= {descender, ascenderGeneral};
+	int[] movs = { descender, ascenderGeneral };
 	int estadoActual;
 	int contador;
 	int movimientoActual;
-	boolean firstElement=true;
+	boolean firstElement = true;
+
 	void comprueba() {
 
 		boolean incluidoComentarioSegunFrame = compruebaTiempoDeAparicionComentario(tiempoDeComentario);
 
-		int intervaloCambio = tiempoDeComentario/2;
-		int intervaloCambioTransicion = tiempoDeComentario/4;
-		int velocidad=5;
-		if ((frameCount % intervaloCambio==0) || frameCount==1){
+		int intervaloCambio = tiempoDeComentario / 2;
+		int intervaloCambioTransicion = tiempoDeComentario / 4;
+		int velocidad = 5;
+		if ((frameCount % intervaloCambio == 0) || frameCount == 1) {
 			contador++;
-			estadoActual=contador%movs.length;
+			estadoActual = contador % movs.length;
 			movimientoActual = movs[estadoActual];
-			entradaCount=0;
+			entradaCount = 0;
 
-			if (comentariosRepresentados.size() == 1 ){
-				if(firstElement){
-				contador++;
-				movimientoActual = movs[0];
-				firstElement=false;
-				escalaAnterior=escalaActual;
-				escalaActual = calculaEscala(true);
+			if (comentariosRepresentados.size() == 1) {
+				if (firstElement) {
+					contador++;
+					movimientoActual = movs[0];
+					firstElement = false;
+					escalaAnterior = escalaActual;
+					escalaActual = calculaEscala(true);
 
-				}else{
-					escalaAnterior=escalaActual;
-	escalaActual = new EscalaYTranslacion(1, width/2, height/2);
+				} else {
+					escalaAnterior = escalaActual;
+					escalaActual = new EscalaYTranslacion(1.5f, width / 2, height / 2);
 
 				}
-				println(estadoActual+"  --- "+contador+"movimientoActual: "+movimientoActual);
-			}else if(comentariosRepresentados.size()>1){
-				println("sig"+estadoActual+"  --- "+contador+"movimientoActual: "+movimientoActual);
-				println("equipos.size(): "+equipos.size());
-				boolean ascendiendo = movimientoActual==ascenderGeneral;
-				escalaAnterior=escalaActual;
+				println(estadoActual + "  --- " + contador + "movimientoActual: " + movimientoActual);
+			} else if (comentariosRepresentados.size() > 1) {
+				println("sig" + estadoActual + "  --- " + contador + "movimientoActual: " + movimientoActual);
+				println("equipos.size(): " + equipos.size());
+				boolean ascendiendo = movimientoActual == ascenderGeneral;
+				escalaAnterior = escalaActual;
 				escalaActual = calculaEscala(!ascendiendo);
 			}
 
-			
 		}
 
-			if (escalaActual != null && escalaAnterior != null) {
-				if(entradaCount<intervaloCambioTransicion)
-					if(entradaCount+velocidad>=intervaloCambioTransicion)
-						entradaCount=intervaloCambioTransicion;
-					else
-						entradaCount+=velocidad;
-				mapeo = map(entradaCount, 0, intervaloCambioTransicion, escalaAnterior.scale, escalaActual.scale);
-				x = map(entradaCount, 0, intervaloCambioTransicion, escalaAnterior.x, escalaActual.x);
-				y = map(entradaCount, 0, intervaloCambioTransicion, escalaAnterior.y, escalaActual.y);
-				log.debug("escalaAnterior.scale:" + escalaAnterior.scale + " escalaActual.scale:" + escalaActual.scale
-						+ " mapeo" + mapeo);
-				log.debug(x+"-"+y+" ecale: "+mapeo+" escalaAnterior.scale:"+escalaAnterior.scale+ " escalaActual.scale"+escalaActual.scale);
-				
-			}
+		if (escalaActual != null && escalaAnterior != null) {
+			if (entradaCount < intervaloCambioTransicion)
+				if (entradaCount + velocidad >= intervaloCambioTransicion)
+					entradaCount = intervaloCambioTransicion;
+				else
+					entradaCount += velocidad;
+			mapeo = map(entradaCount, 0, intervaloCambioTransicion, escalaAnterior.scale, escalaActual.scale);
+			x = map(entradaCount, 0, intervaloCambioTransicion, escalaAnterior.x, escalaActual.x);
+			y = map(entradaCount, 0, intervaloCambioTransicion, escalaAnterior.y, escalaActual.y);
+			log.debug("escalaAnterior.scale:" + escalaAnterior.scale + " escalaActual.scale:" + escalaActual.scale
+					+ " mapeo" + mapeo);
+			log.debug(x + "-" + y + " ecale: " + mapeo + " escalaAnterior.scale:" + escalaAnterior.scale
+					+ " escalaActual.scale" + escalaActual.scale);
 
+		}
 
 	}
+
 	int entradaCount;
 
 	private boolean compruebaTiempoDeAparicionComentario(int frames) {
@@ -185,45 +182,44 @@ public class ForosEscale extends PApplet {
 			}
 			return true;
 
-
 		}
 		return false;
 	}
 
 	private EscalaYTranslacion calculaEscala(boolean soloUltimo) {
 
-		float equilibrio=30;
-		float dameX1 = dameX1(soloUltimo)-equilibrio ;
-		float dameX2 = dameX2(soloUltimo)+equilibrio;
-		float dameY1 = dameY1(soloUltimo)-equilibrio;
-		float dameY2 = dameY2(soloUltimo)+equilibrio;
-		
+		float equilibrio = 30;
+		float dameX1 = dameX1(soloUltimo) - equilibrio;
+		float dameX2 = dameX2(soloUltimo) + equilibrio;
+		float dameY1 = dameY1(soloUltimo) - equilibrio;
+		float dameY2 = dameY2(soloUltimo) + equilibrio;
+
 		float anchoRepresentar = dameX2 - dameX1;
 		float altoRepresentar = dameY2 - dameY1;
 		float escalaProvX = (width / anchoRepresentar);
 		float escalaProvY = (height / altoRepresentar);
 		float incremento = dameIncremento(escalaProvX, escalaProvY);
 
-
-		float origenX = dameX1+(anchoRepresentar/2) ;
-		float origenY = dameY1+(altoRepresentar/2) ;
+		float origenX = dameX1 + (anchoRepresentar / 2);
+		float origenY = dameY1 + (altoRepresentar / 2);
 		log.debug("origenX" + origenX + " origenY" + origenY);
-//		while (origenX-(anchoRepresentar/2) < 0)
-//			origenX --;
-//		while (origenY-(altoRepresentar/2) < 0)
-//			origenY--;
+		// while (origenX-(anchoRepresentar/2) < 0)
+		// origenX --;
+		// while (origenY-(altoRepresentar/2) < 0)
+		// origenY--;
 		escalaAnterior = escalaActual;
 		EscalaYTranslacion escalaActual = new EscalaYTranslacion(incremento, origenX, origenY);
 
 		return escalaActual;
-		
+
 	}
 
 	EscalaYTranslacion escalaAnterior;
 	EscalaYTranslacion escalaActual;
-	float mapeo=1;
-	float x=0;
-	float y=0;
+	float mapeo = 1;
+	float x = 0;
+	float y = 0;
+
 	void pintaZoomCuadro(float x1, float x2, float y1, float y2) {
 		noFill();
 		stroke(0);
@@ -242,7 +238,8 @@ public class ForosEscale extends PApplet {
 	}
 
 	float dameX1(boolean soloUltimo) {
-		if(soloUltimo) return ultimoComent().x-soloUnEquipoMargin;
+		if (soloUltimo)
+			return ultimoComent().x - soloUnEquipoMargin;
 
 		float resultado = width;
 		for (EquipoEscale e : equipos) {
@@ -253,13 +250,15 @@ public class ForosEscale extends PApplet {
 	}
 
 	private EquipoEscale ultimoComent() {
-		return comentariosRepresentados.get(comentariosRepresentados.size()-1).usuario.equipo;
+		return comentariosRepresentados.get(comentariosRepresentados.size() - 1).usuario.equipo;
 	}
-	private float soloUnEquipoMargin=50;
+
+	private float soloUnEquipoMargin = 50;
 
 	float dameX2(boolean soloUltimo) {
-		if(soloUltimo) return ultimoComent().x+soloUnEquipoMargin;
-	float resultado = 0;
+		if (soloUltimo)
+			return ultimoComent().x + soloUnEquipoMargin;
+		float resultado = 0;
 		for (EquipoEscale e : equipos) {
 			if (e.x > resultado)
 				resultado = e.x;
@@ -268,8 +267,9 @@ public class ForosEscale extends PApplet {
 	}
 
 	float dameY1(boolean soloUltimo) {
-		if(soloUltimo) return ultimoComent().y-soloUnEquipoMargin;
-	float resultado = height;
+		if (soloUltimo)
+			return ultimoComent().y - soloUnEquipoMargin;
+		float resultado = height;
 		for (EquipoEscale e : equipos) {
 			if (e.y < resultado)
 				resultado = e.y;
@@ -278,7 +278,8 @@ public class ForosEscale extends PApplet {
 	}
 
 	float dameY2(boolean soloUltimo) {
-		if(soloUltimo) return ultimoComent().y+soloUnEquipoMargin;
+		if (soloUltimo)
+			return ultimoComent().y + soloUnEquipoMargin;
 		float resultado = 0;
 		for (EquipoEscale e : equipos) {
 			if (e.y > resultado)

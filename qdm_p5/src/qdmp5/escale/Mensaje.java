@@ -11,13 +11,25 @@ public class Mensaje extends ClaseP5 {
 
 	int contador;
 	float textAscent;
+	boolean yaSaturado;
 
-	void pintaMensaje(PFont font, int colorTexto, int colorFondo, String mensaje, float x, float y, int tam, int tiempoDeComentario) {
-		if (contador >= tiempoDeComentario - 1)
+	void pintaMensaje(PFont font, int colorTexto, int colorFondo, String mensaje, float x, float y, int tam,
+			int tiempoDeComentario, int tiempoDeDelay) {
+		if (contador < 20 && yaSaturado)
 			return;
+		if ((contador >= (tiempoDeComentario + tiempoDeDelay - 1)))
+			return;
+		if (contador < tiempoDeDelay) {
+			contador++;
+			return;
+		}
 		p5.pushStyle();
 		p5.textFont(font);
-		p5.fill(colorFondo, p5.map(contador, 0, tiempoDeComentario, 80, p5.map(contador, 0, tiempoDeComentario, 100,0)));
+		float map = p5.map(contador, tiempoDeDelay, tiempoDeComentario + tiempoDeDelay, 40, 100);
+		if (map > 90) {
+			yaSaturado = true;
+		}
+		p5.fill(colorFondo, map);
 		p5.noStroke();
 		p5.textSize(tam);
 		p5.textAlign(p5.CENTER);
@@ -28,7 +40,11 @@ public class Mensaje extends ClaseP5 {
 		p5.fill(colorTexto);
 		p5.text(mensaje, x, y + textAscent);
 		p5.popStyle();
-		contador++;
+		if (!yaSaturado)
+			contador++;
+		else
+			contador--;
+
 	}
 
 }
