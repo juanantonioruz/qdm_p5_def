@@ -18,25 +18,43 @@ import toxi.color.TColor;
 
 public class ForosEscale extends PApplet {
 
-	PImage a;
+	PImage mapa;
 	Log log = LogFactory.getLog(getClass());
 
 	List<EquipoEscale> equipos;
 	List<EquipoEscale> equiposDB;
 	PFont font;
 	GrabacionEnVideo grabacionEnVideo;
-	private boolean grabando = true;
-
+	private boolean grabando = false;
+	EscalaYTranslacion escalaAnterior;
+	EscalaYTranslacion escalaActual;
+	
+	ServicioEscala servicioEscala;
+	float mapeo = 1;
+	float x = 0;
+	float y = 0;
 	public void setup() {
 		colorMode(HSB, 100);
-		a = loadImage("peter_medium.png");
-		size(a.width, a.height);
+		mapa = loadImage("peter_medium.png");
+		size(mapa.width, mapa.height);
 		smooth();
 		font = loadFont("Courier10PitchBT-Roman-25.vlw");
 
+		loadXML();
+		
+		grabacionEnVideo = new GrabacionEnVideo(this, grabando);
+		
+		
+		escalaActual = new EscalaYTranslacion(1, width / 2, height / 2);
+		mapeo = escalaActual.scale;
+		x = escalaActual.x;
+		y = escalaActual.y;
+		servicioEscala=new ServicioEscala(this, equipos, comentariosRepresentados);
+	}
+
+	private void loadXML() {
 		equipos = new ArrayList<EquipoEscale>();
 		equiposDB = new ArrayList<EquipoEscale>();
-		println(a.width + " - " + a.height);
 		equiposDB.add(new EquipoEscale(this, 1, "bamako", 224, 122, "Niamakoro y Sicoro"));
 		equiposDB.add(new EquipoEscale(this, 2, "barcelona", 236, 55, "Casc Antic"));
 		equiposDB.add(new EquipoEscale(this, 3, "bogota", 133, 145, "Chapinero"));
@@ -54,12 +72,6 @@ public class ForosEscale extends PApplet {
 		ForosXMLLoadScale forosXMLLoad = new ForosXMLLoadScale(this, equiposDB);
 		comentarios = forosXMLLoad.procesaXML("foros.xml");
 		Collections.reverse(comentarios);
-		grabacionEnVideo = new GrabacionEnVideo(this, grabando);
-		escalaActual = new EscalaYTranslacion(1, width / 2, height / 2);
-		mapeo = escalaActual.scale;
-		x = escalaActual.x;
-		y = escalaActual.y;
-
 	}
 
 	int ascenderGeneral = 2;
@@ -67,13 +79,7 @@ public class ForosEscale extends PApplet {
 	int descender = 1;
 	List<ComentarioEscale> comentarios;
 	List<ComentarioEscale> comentariosRepresentados = new ArrayList<ComentarioEscale>();
-	int equipo = 6;
 
-	float dameIncremento(float x, float y) {
-		if (x > y)
-			return y;
-		return x;
-	}
 
 	int tiempoDeComentario = 30 * 4;
 
@@ -83,7 +89,7 @@ public class ForosEscale extends PApplet {
 		translate(x, y); // use translate around scale
 		scale(mapeo);
 		translate(-x, -y); // to scale from the center
-		image(a, 0, 0);
+		image(mapa, 0, 0);
 	//	ellipse(x, y, 100, 100);
 		for (int i = 0; i < comentariosRepresentados.size(); i++) {
 			ComentarioEscale comentario = comentariosRepresentados.get(i);
@@ -107,12 +113,12 @@ public class ForosEscale extends PApplet {
 	}
 
 	int[] movs = { descender, ascenderGeneral };
-	int estadoActual;
 	int contador;
-	int movimientoActual;
 	boolean firstElement = true;
 
 	void comprueba() {
+		int estadoActual;
+		int movimientoActual;
 
 		boolean incluidoComentarioSegunFrame = compruebaTiempoDeAparicionComentario(tiempoDeComentario);
 
@@ -131,7 +137,7 @@ public class ForosEscale extends PApplet {
 					movimientoActual = movs[0];
 					firstElement = false;
 					escalaAnterior = escalaActual;
-					escalaActual = calculaEscala(true);
+					escalaActual = servicioEscala.calculaEscala(true, width, height);
 
 				} else {
 					escalaAnterior = escalaActual;
@@ -144,7 +150,7 @@ public class ForosEscale extends PApplet {
 				println("equipos.size(): " + equipos.size());
 				boolean ascendiendo = movimientoActual == ascenderGeneral;
 				escalaAnterior = escalaActual;
-				escalaActual = calculaEscala(!ascendiendo);
+				escalaActual = servicioEscala.calculaEscala(!ascendiendo,width, height);
 			}
 
 		}
@@ -186,118 +192,8 @@ public class ForosEscale extends PApplet {
 		return false;
 	}
 
-	private EscalaYTranslacion calculaEscala(boolean soloUltimo) {
 
-		float equilibrio = 30;
-		float dameX1 = dameX1(soloUltimo) - equilibrio;
-		float dameX2 = dameX2(soloUltimo) + equilibrio;
-		float dameY1 = dameY1(soloUltimo) - equilibrio;
-		float dameY2 = dameY2(soloUltimo) + equilibrio;
 
-		float anchoRepresentar = dameX2 - dameX1;
-		float altoRepresentar = dameY2 - dameY1;
-		float escalaProvX = (width / anchoRepresentar);
-		float escalaProvY = (height / altoRepresentar);
-		float incremento = dameIncremento(escalaProvX, escalaProvY);
-
-		float origenX = dameX1 + (anchoRepresentar / 2);
-		float origenY = dameY1 + (altoRepresentar / 2);
-		log.debug("origenX" + origenX + " origenY" + origenY);
-		// while (origenX-(anchoRepresentar/2) < 0)
-		// origenX --;
-		// while (origenY-(altoRepresentar/2) < 0)
-		// origenY--;
-		escalaAnterior = escalaActual;
-		EscalaYTranslacion escalaActual = new EscalaYTranslacion(incremento, origenX, origenY);
-
-		return escalaActual;
-
-	}
-
-	EscalaYTranslacion escalaAnterior;
-	EscalaYTranslacion escalaActual;
-	float mapeo = 1;
-	float x = 0;
-	float y = 0;
-
-	void pintaZoomCuadro(float x1, float x2, float y1, float y2) {
-		noFill();
-		stroke(0);
-		strokeWeight(0.5f);
-		rect(x1, y1, x2 - x1, y2 - y1);
-	}
-
-	boolean debug;
-
-	public void mousePressed() {
-		debug = true;
-	}
-
-	public void mouseReleased() {
-		debug = false;
-	}
-
-	float dameX1(boolean soloUltimo) {
-		if (soloUltimo)
-			return ultimoComent().x - soloUnEquipoMargin;
-
-		float resultado = width;
-		for (EquipoEscale e : equipos) {
-			if (e.x < resultado)
-				resultado = e.x;
-		}
-		return resultado;
-	}
-
-	private EquipoEscale ultimoComent() {
-		return comentariosRepresentados.get(comentariosRepresentados.size() - 1).usuario.equipo;
-	}
-
-	private float soloUnEquipoMargin = 50;
-
-	float dameX2(boolean soloUltimo) {
-		if (soloUltimo)
-			return ultimoComent().x + soloUnEquipoMargin;
-		float resultado = 0;
-		for (EquipoEscale e : equipos) {
-			if (e.x > resultado)
-				resultado = e.x;
-		}
-		return resultado;
-	}
-
-	float dameY1(boolean soloUltimo) {
-		if (soloUltimo)
-			return ultimoComent().y - soloUnEquipoMargin;
-		float resultado = height;
-		for (EquipoEscale e : equipos) {
-			if (e.y < resultado)
-				resultado = e.y;
-		}
-		return resultado;
-	}
-
-	float dameY2(boolean soloUltimo) {
-		if (soloUltimo)
-			return ultimoComent().y + soloUnEquipoMargin;
-		float resultado = 0;
-		for (EquipoEscale e : equipos) {
-			if (e.y > resultado)
-				resultado = e.y;
-		}
-		return resultado;
-	}
-
-	void pintaMensaje(int c, String mensaje, float x, float y, PGraphics g, int tam, int align) {
-		g.textFont(font);
-		g.fill(0);
-		g.noStroke();
-		g.textSize(tam);
-		g.textAlign(align);
-		g.rect(x, y, textWidth(mensaje), textAscent());
-		g.fill(c);
-		g.text(mensaje, x, y + textAscent());
-	}
 
 	public void keyPressed() {
 		if (key == ' ') {
@@ -307,15 +203,3 @@ public class ForosEscale extends PApplet {
 
 }
 
-class EscalaYTranslacion {
-	public EscalaYTranslacion(float incremento, float origenX, float origenY) {
-		scale = incremento;
-		x = origenX;
-		y = origenY;
-	}
-
-	float scale;
-	float x;
-	float y;
-
-}
