@@ -17,7 +17,7 @@ public class Mensaje extends ClaseP5 {
 			return;
 		p5.pushStyle();
 		p5.textFont(font);
-		p5.fill(colorFondo, p5.map(contador, 0, tiempoDeComentario, 80, 60));
+		p5.fill(colorFondo, p5.map(contador, 0, tiempoDeComentario, 80, p5.map(contador, 0, tiempoDeComentario, 100,0)));
 		p5.noStroke();
 		p5.textSize(tam);
 		p5.textAlign(p5.CENTER);
