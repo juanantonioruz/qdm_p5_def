@@ -14,7 +14,6 @@ import toxi.color.TColor;
 public class ServicioLoadEquipos extends ClaseP5 {
 	public ServicioLoadEquipos(PApplet p5) {
 		super(p5);
-		// TODO Auto-generated constructor stub
 	}
 
 	public List<ComentarioEscale> loadXML(List<EquipoEscale> equipos, List<EquipoEscale> equiposDB) {

@@ -17,12 +17,15 @@ public class EquipoEscale extends ModeloEscaleBase{
 	private final PApplet p5;
 	private final String barrio;
 	List<UsuarioEscale> usuarios = new ArrayList();
-
+	List<ComentarioEscale> comentarios = new ArrayList();
+	List<ComentarioEscale> comentariosRepresentados = new ArrayList();
 	int color;
+	  int id;
 
 	public EquipoEscale(PApplet p5, int _id, String _n, int _x, int _y, String _barrio) {
 		super(p5);
 		this.p5 = p5;
+		this.id = _id;
 		this.nombre = _n;
 		this.barrio = _barrio;
 		this.x = p5.map(_x, 0, widthEscala, 0, p5.width);

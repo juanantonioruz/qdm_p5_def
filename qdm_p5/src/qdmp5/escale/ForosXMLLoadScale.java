@@ -63,6 +63,7 @@ public class ForosXMLLoadScale extends ClaseP5{
 				ComentarioEscale comentario = new ComentarioEscale(p5, idComentario,
 						titulo, texto, usuario, idComentarioParent, d);
 				usuario.addComentario(comentario);
+				e.comentarios.add(comentario);
 				comentariosList.add(comentario);
 			} catch (Exception e) {
 				log.error("el message" + e.getMessage());
