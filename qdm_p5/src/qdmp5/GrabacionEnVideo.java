@@ -15,7 +15,7 @@ public class GrabacionEnVideo extends ClaseP5 {
 	public void start() {
 		if(grabando){
 			mm = new GSMovieMaker(p5, p5.width, p5.height, "drawing.ogg",
-					GSMovieMaker.THEORA, GSMovieMaker.MEDIUM, 30);
+					GSMovieMaker.THEORA, GSMovieMaker.HIGH, 30);
 			mm.setQueueSize(50, 10);
 			mm.start();
 		}

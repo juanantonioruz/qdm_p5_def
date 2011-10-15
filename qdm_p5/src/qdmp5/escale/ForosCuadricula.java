@@ -25,62 +25,102 @@ public class ForosCuadricula extends PApplet {
 	List<EquipoEscale> equiposDB = new ArrayList<EquipoEscale>();
 	PFont font;
 	GrabacionEnVideo grabacionEnVideo;
-	private boolean grabando = true;
+	private boolean grabando = true ;
 
 	List<Fila> filas;
 
+	int anchoMaximoComentario=0;
 	public void setup() {
 		colorMode(HSB, 100);
-		size(800, 600);
+		size(1000, 600);
 		smooth();
 		font = loadFont("Courier10PitchBT-Roman-25.vlw");
 
 		comentarios = new ServicioLoadEquipos(this).loadXML(equipos, equiposDB);
 		int numeroComentarios = comentarios.size();
 		anchoComentario = width / numeroComentarios;
-
+		for(ComentarioEscale c:comentarios)
+			if(c.texto.length()>anchoMaximoComentario) anchoMaximoComentario=c.texto.length();
 		filas = iniciaFilas();
 
 		grabacionEnVideo = new GrabacionEnVideo(this, grabando);
 
 	}
+	Fila dameFila(EquipoEscale e){
+		for(Fila f:filas)
+			if(f.equipo.equals(e))return f;
+		throw new RuntimeException();
+	}
 
 	List<ComentarioEscale> comentarios;
 	List<Rectangulo> comentariosRepresentados = new ArrayList<Rectangulo>();
 
-	int tiempoDeComentario = 30 * 4;
+	int tiempoDeComentario = 30 ;
 	float anchoComentario;
 
-	static int framesPorComentario = 75;
+	static int framesPorComentario = 15;
 	public void draw() {
 		background(100);
 		boolean compruebaTiempoDeAparicionComentario = compruebaTiempoDeAparicionComentario(framesPorComentario);
-		pintaReticulaEquipos();
-		pintaComentarios();
+//		pintaReticulaEquipos();
+		pintaComentarios(false);
+		pintaComentarios(true);
 		if (compruebaTiempoDeAparicionComentario || (rectanguloActual != null && rectanguloActual.isPintando())) {
 
 			println(rectanguloActual.comentario.titulo);
 
-			rectanguloActual.pinta();
-			pintaMensaje(color(100), rectanguloActual.comentario.titulo, 250, rectanguloActual.y+rectanguloActual.height/2, g, 20, LEFT);
+		//	rectanguloActual.pinta();
+		//	pintaMensaje(color(100), rectanguloActual.comentario.titulo, 250, rectanguloActual.y+rectanguloActual.height/2, g, 20, LEFT);
 		}
 		pintaNombresEquipos();
 
 		grabacionEnVideo.addFotograma();
 
 	}
-
-	private void pintaComentarios() {
+	private void pintaComentarios(boolean linea) {
+		int contadorLineas=1;
 		pushStyle();
+		strokeCap(SQUARE);
+
+		int posicionX=200;
 		for(Rectangulo r:comentariosRepresentados){
-			fill(r.comentario.usuario.equipo.color, 50);
-			noStroke();
-			rect(r.x, r.y, anchoComentario, Fila.height);
-			stroke(100, 50);
-			strokeWeight(3);
+			Fila f=dameFila(r.comentario.usuario.equipo);
+			stroke(r.comentario.usuario.equipo.color, map(r.comentario.texto.length(), 30,anchoMaximoComentario, 30,50));
+//			noStroke();
+			float map = map(r.comentario.texto.length(), 30,anchoMaximoComentario, 10,60);
+			strokeWeight(map);
+			noFill();
+			int ancho = 0;
+			float puntoY=0;
+			int posYLineaTiempo = height-10;
+			if(r.y>posYLineaTiempo) puntoY=posYLineaTiempo+200;
+			else 
+				puntoY=posYLineaTiempo-200;
+			//while(ancho<r.width){
+			float fX = posicionX+map/2;
+			if(!linea)
+				  bezier(f.x+textWidth(f.equipo.nombre)/2, 70, 
+						  fX-fX/2, puntoY, 
+						  fX, puntoY, 
+						  fX, posYLineaTiempo);
+					stroke(color(0), 100);
+					strokeWeight(1);
+					if(linea)
+						  bezier(f.x+textWidth(f.equipo.nombre)/2, 70, 
+							  fX-fX/2, puntoY, 
+							  fX, puntoY, 
+							  fX, posYLineaTiempo);
+
+//			line(0, r.y+r.height/2, r.x+ancho, (height/2));
+			//ancho+=2;
+			//}
+			strokeWeight(1);
+			//line(r.x, (height/2)+contadorLineas, width, (height/2)+contadorLineas);
 //			line(posicion + anchoComentario, posicionY, posicion + anchoComentario, posicionY + Fila.height);
 
 			rectanguloActual=r;
+			contadorLineas+=5;
+			posicionX+=map;
 		}
 
 		popStyle();
@@ -90,10 +130,12 @@ public class ForosCuadricula extends PApplet {
 		List<Fila> filas = new ArrayList<Fila>();
 		int numeroEquiposDB = equiposDB.size();
 		float altoBanda = height / numeroEquiposDB;
+		int numeroEquipos = equiposDB.size();
+		float anchoEquipo=width/numeroEquipos;
 
 		for (int i = 0; i < equiposDB.size(); i++) {
 			EquipoEscale equipo = (EquipoEscale) equiposDB.get(i);
-			Fila fila=new Fila(this, 0, i * altoBanda, width, altoBanda , equipo);
+			Fila fila=new Fila(this, anchoEquipo*i, i * altoBanda, width, altoBanda , equipo);
 			filas.add(fila);
 		}
 		return filas;
@@ -119,12 +161,16 @@ public class ForosCuadricula extends PApplet {
 	private void pintaNombresEquipos() {
 		
 		pushStyle();
+		int numeroEquipos = filas.size();
+		float anchoEquipo=width/numeroEquipos;
+		int contador = 0;
 		for (Fila f:filas) {
 			EquipoEscale equipo = f.equipo;
-			noStroke();
-			fill(100);
-			g.rect(100-10, f.y+(f.height/2)-10, textWidth(equipo.nombre)+20, textAscent()+20);
-			pintaMensaje(equipo.color, equipo.nombre.toUpperCase(), 100, f.y+(f.height/2), g, 22, LEFT);
+			stroke(color(100));
+			fill(equipo.color);
+			g.rect(f.x, 50, textWidth(equipo.nombre.toUpperCase())+20, textAscent()+20);
+			pintaMensaje(color(100), equipo.nombre.toUpperCase(), f.x, 50, g, 22, LEFT);
+			contador++;
 			
 		}
 		popStyle();
@@ -197,17 +243,17 @@ class Rectangulo extends ClaseP5 {
 	}
 	float angle=0;
 	public void pinta() {
-		contador++;
-		angle+=p5.PI/ForosCuadricula.framesPorComentario;
-		p5.fill(comentario.usuario.equipo.color,70);
-		int v=ForosCuadricula.framesPorComentario/2;
-		float vx=x/2;
-		float widthDyna=p5.map(v + v*p5.sin(angle), v,2*v, width,p5.width);
-		float xDyna=p5.map(vx + vx*p5.sin(angle), vx,2*vx, x,0);
-		if(x!=0)
-		p5.rect(xDyna, y, widthDyna, height);
-		else
-			p5.rect(x, y, widthDyna, height);
+//		contador++;
+//		angle+=p5.PI/ForosCuadricula.framesPorComentario;
+//		p5.fill(comentario.usuario.equipo.color,70);
+//		int v=ForosCuadricula.framesPorComentario/2;
+//		float vx=x/2;
+//		float widthDyna=p5.map(v + v*p5.sin(angle), v,2*v, width,p5.width);
+//		float xDyna=p5.map(vx + vx*p5.sin(angle), vx,2*vx, x,0);
+//		if(x!=0)
+//		p5.rect(xDyna, y, widthDyna, height);
+//		else
+//			p5.rect(x, y, widthDyna, height);
 			
 	}
 
