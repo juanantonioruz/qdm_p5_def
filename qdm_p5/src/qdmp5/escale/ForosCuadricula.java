@@ -25,7 +25,7 @@ public class ForosCuadricula extends PApplet {
 	List<EquipoEscale> equiposDB = new ArrayList<EquipoEscale>();
 	PFont font;
 	GrabacionEnVideo grabacionEnVideo;
-	private boolean grabando = true ;
+	private boolean grabando = false ;
 
 	List<Fila> filas;
 
@@ -67,7 +67,7 @@ public class ForosCuadricula extends PApplet {
 		pintaComentarios(true);
 		if (compruebaTiempoDeAparicionComentario || (rectanguloActual != null && rectanguloActual.isPintando())) {
 
-			println(rectanguloActual.comentario.titulo);
+		//	println(rectanguloActual.comentario.titulo);
 
 		//	rectanguloActual.pinta();
 		//	pintaMensaje(color(100), rectanguloActual.comentario.titulo, 250, rectanguloActual.y+rectanguloActual.height/2, g, 20, LEFT);

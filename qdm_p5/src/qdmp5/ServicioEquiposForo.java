@@ -15,7 +15,7 @@ public class ServicioEquiposForo extends ClaseP5{
 		super(p5);
 	}
 	List<Equipo> iniciaEquipos() {
-		ColorList listaColoresEquipo=new ServicioToxiColor().iniciaColoresEquipos();
+		ColorList listaColoresEquipo=new ServicioToxiColor(p5).iniciaColoresEquipos();
 		List<Equipo> equiposIn = new ArrayList();
 		equiposIn.add(new Equipo(p5, 1, "bamako", 224, 122,"Niamakoro y Sicoro"));
 		equiposIn.add(new Equipo(p5, 2, "barcelona", 236, 55, "Casc Antic"));

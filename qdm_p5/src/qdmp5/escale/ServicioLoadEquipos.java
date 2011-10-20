@@ -27,7 +27,7 @@ public class ServicioLoadEquipos extends ClaseP5 {
 		equiposDB.add(new EquipoEscale(p5, 8, "pikine", 210, 121, "Wakhinane"));
 		equiposDB.add(new EquipoEscale(p5, 9, "rio", 175, 221, "La Maré y Rio das Pedras"));
 		equiposDB.add(new EquipoEscale(p5, 10, "sale", 224, 72, "Karyan El Oued"));
-		ColorList listaColoresEquipo = new ServicioToxiColor().iniciaColoresEquipos();
+		ColorList listaColoresEquipo = new ServicioToxiColor(p5).iniciaColoresEquiposBis();
 
 		for (int i = 0; i < equiposDB.size(); i++)
 			equiposDB.get(i).setColor((TColor) listaColoresEquipo.get(i));
